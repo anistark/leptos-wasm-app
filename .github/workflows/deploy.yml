@@ -33,6 +33,12 @@ jobs:
         run: |
           sed -i '/<base/d' index.html || true
 
+      - name: Create Trunk.toml
+        run: |
+          echo '[build]' > Trunk.toml
+          echo 'filehash = false' >> Trunk.toml
+          cat Trunk.toml
+
       - name: Build with Trunk
         run: trunk build --release --public-url "/leptos-wasm-app"
         
