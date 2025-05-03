@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leptos WASM App</title>
+    <link rel="stylesheet" href="/leptos-wasm-app/styles.css" integrity="sha384-tYbYTsU363Ji9wqOHEsS1mlHwSz3y8CjBKZ3sW9qJrhUq1qSRD2UQ1gBZ5XMnLii"/>
+    
+<script type="module">
+import init, * as bindings from '/leptos-wasm-app/leptos-wasm-app.js';
+const wasm = await init({ module_or_path: '/leptos-wasm-app/leptos-wasm-app_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script>
+  <link rel="modulepreload" href="/leptos-wasm-app/leptos-wasm-app.js" crossorigin="anonymous" integrity="sha384-4Afbu1G10HVoeUPmMEIzLlT9S/0nGX3w+qZWAnQK/hjO3vOk/VZnyy3JmymeT9yM"><link rel="preload" href="/leptos-wasm-app/leptos-wasm-app_bg.wasm" crossorigin="anonymous" integrity="sha384-LB6WzJvm7Z0rcb3JoN6jgZJ8jGoKoTu9q1bVyBEq7hysTjjrjX//jV74xqLdXkpD" as="fetch" type="application/wasm"></head>
+  <body></body>
+</html>
