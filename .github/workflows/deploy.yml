@@ -29,8 +29,19 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Ensure index.html has no base tag
+        run: |
+          sed -i '/<base/d' index.html || true
+
       - name: Build with Trunk
-        run: trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
+        run: trunk build --release --public-url "/leptos-wasm-app"
+        
+      - name: Debug dist directory
+        run: |
+          echo "Contents of dist directory:"
+          ls -la dist/
+          echo "Content of index.html:"
+          cat dist/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
