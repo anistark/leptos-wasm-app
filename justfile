@@ -18,41 +18,43 @@ build: setup
 # Deploy to GitHub Pages
 deploy: build
     @echo "Deploying to GitHub Pages..."
-    # Create a temporary directory for deployment
+    # Create a clean temporary directory
     rm -rf .gh-pages-tmp || true
     mkdir -p .gh-pages-tmp
     
-    # Copy the dist contents to the temporary directory
-    cp -r dist/* .gh-pages-tmp/
+    # Clone the repository into the temporary directory
+    git clone $(git config --get remote.origin.url) .gh-pages-tmp
+    cd .gh-pages-tmp
     
-    # Switch to gh-pages branch or create it if it doesn't exist
+    # Fetch gh-pages branch if it exists
     git fetch origin gh-pages || true
-    if git show-ref --verify --quiet refs/heads/gh-pages; then \
-        git checkout gh-pages; \
+    
+    # Check if gh-pages branch exists remotely or locally
+    if git rev-parse --verify --quiet origin/gh-pages >/dev/null; then \
+        git checkout -B gh-pages origin/gh-pages; \
     else \
         git checkout --orphan gh-pages; \
-        git rm -rf .; \
+        git reset --hard; \
     fi
     
-    # Copy the built files to the root
-    cp -r .gh-pages-tmp/* .
+    # Remove all existing files
+    git rm -rf . || true
     
-    # Add all files to git
+    # Copy the dist contents from the parent directory
+    cp -r ../dist/* ./
+    
+    # Add, commit and push the changes
     git add .
-    
-    # Commit the changes
     git commit -m "Deploy to GitHub Pages" || echo "No changes to commit"
+    git push origin gh-pages --force
     
-    # Push to GitHub
-    git push origin gh-pages
-    
-    # Return to previous branch
-    git checkout -
-    
-    # Clean up temporary directory
+    # Return to parent directory and cleanup
+    cd ..
     rm -rf .gh-pages-tmp
     
-    @echo "Deployment complete! Your site is now available at https://$(git config --get remote.origin.url | sed -e 's/.*github.com[\/:]\(.*\)\.git/\1/' | sed 's/\// /g' | awk '{print $1".github.io/"$2}')/"
+    @echo "Deployment complete! Site available at https://$(git config --get remote.origin.url | sed -e 's/.*github.com[\/:]\(.*\)\.git/\1/' | sed 's/\// /g' | awk '{print $1".github.io/"$2}')/"
+    
+    @echo "Deployment complete! Site available at https://$(git config --get remote.origin.url | sed -e 's/.*github.com[\/:]\(.*\)\.git/\1/' | sed 's/\// /g' | awk '{print $1".github.io/"$2}')/"
 
 # Clean project
 clean:
